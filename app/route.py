@@ -88,7 +88,6 @@ def home():
 
 @login_manager.unauthorized_handler
 def unauthorized():
-	error = 'login required'
 	return render_template('login.html', error=error)
 
 @app.route('/datareset')
