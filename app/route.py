@@ -36,10 +36,12 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 class User(db.Document):
+	name = db.StringField(max_length=60)
 	username = db.StringField(max_length=60)
     	password = db.StringField()
 	role = db.StringField()	
 	active = db.BooleanField()
+	image = db.StringField()
 	def is_active(self):
 		return self.active
 	def get_id(self):
@@ -94,10 +96,10 @@ def unauthorized():
 @login_required
 def data():
 	User.objects().delete()
-	User(username='admin',password='default',role='admin',active=True).save()
-	User(username='nirav',password='nirav', role='jobseeker',active=True).save()
-	User(username='curator',password='curator', role='curator',active=True).save()
-	User(username='poster',password='poster', role='poster',active=True).save()
+	User(name='Administrator',username='admin',password='default',role='admin',active=True,image='/static/images/user.png').save()
+	User(name='Nirav',username='nirav',password='nirav', role='jobseeker',active=True, image='/static/images/user.png').save()
+	User(name='Curator',username='curator',password='curator', role='curator',active=True,image='/static/images/user.png').save()
+	User(name='Poster',username='poster',password='poster', role='poster',active=True,image='/static/images/user.png').save()
  	return 'Data Entered!'
 
 @app.route('/list')

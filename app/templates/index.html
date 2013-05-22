@@ -70,13 +70,7 @@
 {% endblock %}
 
 {% block user %}
-<a title="" class="leftUserDrop"><img src="/static/images/user.png" alt="" /><span><strong>3</strong></span></a><span>Eugene</span>i
-<ul class="leftUser">
-	<li><a href="#" title="" class="sProfile">My profile</a></li>
-	<li><a href="#" title="" class="sMessages">Messages</a></li>
-	<li><a href="#" title="" class="sSettings">Settings</a></li>
-	<li><a href="#" title="" class="sLogout">Logout</a></li>
-</ul>
+<a title="" class="leftUserDrop"><img src="{{ user.image }}" alt="" /><span><strong>3</strong></span></a><span>{{ user.name }}</span>
 {% endblock %}
 
 
