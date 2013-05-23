@@ -16,7 +16,7 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/files/jquery-ui.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/plugins/forms/ui.spinner.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/plugins/forms/jquery.mousewheel.js')}}"></script>
- 
+<!-- 
 <script type="text/javascript" src="{{ url_for('static', filename='js/plugins/charts/excanvas.min.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/plugins/charts/jquery.flot.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/plugins/charts/jquery.flot.orderBars.js')}}"></script>
@@ -65,11 +65,24 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/plugins/others/jquery.elfinder.js')}}"></script>
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/plugins/ui/jquery.easytabs.min.js')}}"></script>
+-->
+<!--
 <script type="text/javascript" src="{{ url_for('static', filename='js/files/bootstrap.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/files/functions.js')}}"></script>
-
+-->
+<!--
 <script type="text/javascript" src="{{ url_for('static', filename='js/charts/chart.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/charts/hBar_side.js')}}"></script>
+-->
+
+<!-- Marionetter Dependencies -->
+<script src="{{ url_for('static', filename='js/files/underscore.js')}}"></script>
+<script src="{{ url_for('static', filename='js/files/backbone.js')}}"></script>
+<script src="{{ url_for('static', filename='js/files/backbone.marionette.js')}}"></script>
+<link href="{{ url_for('static', filename='css/bootstrap.css')}}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/custom.css')}}" rel="stylesheet">
+<!-- END Marionetter Dependencies -->
+
 
 </head>
 
@@ -125,5 +138,37 @@
 </div>
 <!-- Content ends -->
 
+<!-- Marionette Templates -->
+
+<script type="text/template" id="angry_cats-template">
+	<thead>
+		<tr class='header'>
+		  <th>Rank</th>
+		  <th>Votes</th>
+		  <th>Name</th>
+		  <th>Image</th>
+		  <th></th>
+		  <th></th>
+		</tr>
+	</thead>
+	<tbody>
+	</tbody>
+</script>
+
+<script type="text/template" id="angry_cat-template">
+	<td><%= rank %></td>
+	<td><%= votes %></td>
+	<td><%= name %></td>
+	<td><img class='angry_cat_pic' src='<%= image_path %>' /></td>
+	<td>
+		<div class='rank_up'><img src='assets/images/up.gif' /></div>
+		<div class='rank_down'><img src='assets/images/down.gif' /></div>
+	</td>
+	<td><a href="#" class="disqualify">Disqualify</a></td>
+</script>
+
+<!-- END Marionette Templates -->
+
+<script src="{{ url_for('static', filename='js/files/app2.js')}}"></script>
 </body>
 </html>
