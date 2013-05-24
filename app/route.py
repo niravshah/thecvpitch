@@ -56,7 +56,6 @@ def load_user(id):
     return User.objects(username=id)[0]
 
 
-
 @app.route('/login', methods=['GET','POST'])
 def login():
 	error = None
@@ -65,6 +64,7 @@ def login():
 		if user.count() > 0:
  			if  request.form['password'] == user[0].password:
 				if login_user(user[0]):
+					session['logged_in'] = True
 					return userhome(current_user)
 			else:
 				error = 'Invalid Login'
@@ -92,6 +92,11 @@ def home():
 def unauthorized():
 	return render_template('login.html')
 
+@app.route('/skillbank/<name>')
+def skillbank(name):
+	user =  User.objects(username=name)
+	return user[0].to_json();
+
 @app.route('/datareset')
 @login_required
 def data():
@@ -108,7 +113,7 @@ def list():
 	users = User.objects.all()
 	for user in users:
 		print user.username
-		print user.is_active()
+		print user.role
 	return'Listed'
 
 

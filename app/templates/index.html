@@ -45,8 +45,8 @@
 {% block mainnav %}
 {%if user.role == 'jobseeker' %}
 <ul class="nav">
-        <li><a id='lidashboard' href="#" title="" class="active"><img src="/static/images/icons/mainnav/dashboard.png" alt="" /><span>Dashboard</span></a></li>
-        <li><a href="ui.html" title=""><img src="/static/images/icons/mainnav/tables.png" alt="" /><span>Skill Bank</span></a></li>
+        <li><a href="#" title="" class="active"><img src="/static/images/icons/mainnav/dashboard.png" alt="" /><span>Dashboard</span></a></li>
+        <li><a href={{ "#skillbank/"+ user.username}} title=""><img src="/static/images/icons/mainnav/tables.png" alt="" /><span>Skill Bank</span></a></li>
         <li><a href="forms.html" title=""><img src="/static/images/icons/mainnav/forms.png" alt="" /><span>Pitch</span></a></li>
         <li><a href="forms.html" title=""><img src="/static/images/icons/mainnav/messages.png" alt="" /><span>Messages</span></a></li>
 </ul>
@@ -88,10 +88,13 @@
 {% endblock %}
 
 {% block content %}
-<div class="contentTop">       
+<div id="contentTopId" class="contentTop">       
 </div>          
 <!-- Main content -->
 <div id='testdiv' class="wrapper">
 </div>
 <!-- Main content ends -->
+<script type="text/template" id="search_template">
+        <h1>Skill Bank For: <%= username%></h1>
+</script>
 {% endblock %}
