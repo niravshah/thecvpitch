@@ -1,13 +1,12 @@
 var SkillBankView = Backbone.View.extend({
 	el: $('#contentTopId'),
 	tagName: 'p'	,
+	template: _.template($('#template1').html()),
 	initialize : function(){
 		this.render();
 	},
 	render: function(){
-		tmp = $.get('/static/js/templates/template1.htm');
-		var template = _.template( tmp.responseText, {username: this.model.attributes.name});
-		this.$el.append(template);
+		this.$el.append(this.template({username: this.model.attributes.name}));
 		return this;
 	}
 });
