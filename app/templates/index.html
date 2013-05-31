@@ -88,19 +88,20 @@
 {% endblock %}
 
 {% block content %}
-<script type='text/template' id='template1'>
-	<h1>Skill Bank For: <%= username%></h1>
-</script>
 <div id="contentTopId" class="contentTop">       
-       <script type="text/javascript" src="http://platform.linkedin.com/in.js">
-          api_key:3ntk7givavqe
-        </script>
-        <script type="in/Login">
-        Hello, <?js= firstName ?> <?js= lastName ?>.
-        </script>
 </div>          
-<!-- Main content -->
-<div id='testdiv' class="wrapper">
+<div id="section_content" class="content">
 </div>
-<!-- Main content ends -->
+<script type='text/template' id='template1'>
+	{% if not user.linkedinid == ''%}
+	        <h1>Skill Bank For: <%= username%></h1>
+	{%endif%}
+	{% if  user.linkedinid == ''%}
+		<h1> No Skill Bank found for User: <%=username%></h1>
+		<p> Authenticate via LinkedIn to import your LinkedIn profile and create a Skillbank automatically </p>
+		<script type="in/Login">
+		  Hello, <?js= firstName ?> <?js= lastName ?>.
+		</script>
+	{%endif%}
+</script>
 {% endblock %}

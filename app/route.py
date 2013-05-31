@@ -36,12 +36,14 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 class User(db.Document):
+	uid = db.IntField()
 	name = db.StringField(max_length=60)
 	username = db.StringField(max_length=60)
     	password = db.StringField()
 	role = db.StringField()	
 	active = db.BooleanField()
 	image = db.StringField()
+	linkedinid = db.StringField()
 	def is_active(self):
 		return self.active
 	def get_id(self):
@@ -92,19 +94,32 @@ def home():
 def unauthorized():
 	return render_template('login.html')
 
-@app.route('/skillbank/<name>')
+@app.route('/skillbank/<name>', methods=['GET','POST'])
 def skillbank(name):
-	user =  User.objects(username=name)
-	return user[0].to_json();
+	if request.method == 'POST':
+		user = User.objects(username=name)[0];
+		user.linkedinid = request.form['id'];
+		user.save();
+		return 'success';
+	else:
+		user =  User.objects(username=name)
+		return user[0].to_json();
+
+
+
+@app.route('/skillpage')
+def skillpage():
+        db_user =  User.objects(username=current_user.username)
+        return render_template('skillpage.html',user=db_user[0])
 
 @app.route('/datareset')
 @login_required
 def data():
 	User.objects().delete()
-	User(name='Administrator',username='admin',password='default',role='admin',active=True,image='/static/images/user.png').save()
-	User(name='Nirav',username='nirav',password='nirav', role='jobseeker',active=True, image='/static/images/user.png').save()
-	User(name='Curator',username='curator',password='curator', role='curator',active=True,image='/static/images/user.png').save()
-	User(name='Poster',username='poster',password='poster', role='poster',active=True,image='/static/images/user.png').save()
+	User(uid=1,name='Administrator',username='admin',password='default',role='admin',active=True,image='/static/images/user.png',linkedinid=None).save()
+	User(uid=2,name='Nirav',username='nirav',password='nirav', role='jobseeker',active=True, image='/static/images/user.png',linkedinid='').save()
+	User(uid=3,name='Curator',username='curator',password='curator', role='curator',active=True,image='/static/images/user.png').save()
+	User(uid=4,name='Poster',username='poster',password='poster', role='poster',active=True,image='/static/images/user.png').save()
  	return 'Data Entered!'
 
 @app.route('/list')
@@ -115,8 +130,6 @@ def list():
 		print user.username
 		print user.role
 	return'Listed'
-
-
 
 if __name__ == '__main__':
   app.run(debug=True, host = '0.0.0.0')
