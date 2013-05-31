@@ -44,6 +44,7 @@ class User(db.Document):
 	active = db.BooleanField()
 	image = db.StringField()
 	linkedinid = db.StringField()
+	profile = db.StringField()
 	def is_active(self):
 		return self.active
 	def get_id(self):
@@ -99,6 +100,7 @@ def skillbank(name):
 	if request.method == 'POST':
 		user = User.objects(username=name)[0];
 		user.linkedinid = request.form['id'];
+		user.profile = request.form['json_str'];
 		user.save();
 		return 'success';
 	else:
@@ -116,8 +118,8 @@ def skillpage():
 @login_required
 def data():
 	User.objects().delete()
-	User(uid=1,name='Administrator',username='admin',password='default',role='admin',active=True,image='/static/images/user.png',linkedinid=None).save()
-	User(uid=2,name='Nirav',username='nirav',password='nirav', role='jobseeker',active=True, image='/static/images/user.png',linkedinid='').save()
+	User(uid=1,name='Administrator',username='admin',password='default',role='admin',active=True,image='/static/images/user.png',linkedinid='',profile='').save()
+	User(uid=2,name='Nirav',username='nirav',password='nirav', role='jobseeker',active=True, image='/static/images/user.png',linkedinid='',profile='').save()
 	User(uid=3,name='Curator',username='curator',password='curator', role='curator',active=True,image='/static/images/user.png').save()
 	User(uid=4,name='Poster',username='poster',password='poster', role='poster',active=True,image='/static/images/user.png').save()
  	return 'Data Entered!'

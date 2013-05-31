@@ -25,13 +25,22 @@
 	     IN.Event.on(IN, "auth", onLinkedInAuth);
 	}
 	function onLinkedInAuth() {
- 	    IN.API.Profile("me").result(displayProfiles);
+ 	    IN.API.Profile("me")
+		.fields(['id','first-name','last-name','headline','location:(name)','industry','summary','specialties','positions','email-address',
+			'honors','interests','publications','patents','skills','certifications','educations','courses','three-current-positions',
+			'three-past-positions', 'recommendations-received'])
+		.result(displayProfiles);
 	}
 	function displayProfiles(profiles) {
 	     member = profiles.values[0];
-	     $('#section_content').html( 	
-	          "<p id=\"" + member.id + "\">Hello " +  member.firstName + " " + member.lastName + "</p>");
-	     $.post('skillbank/{{user.username}}', member);
+	     $.ajax({
+	        	type : "POST",	
+			url: 'skillbank/{{user.username}}',
+			data: {
+				id:member.id, 
+				json_str: JSON.stringify(member)
+			}
+		});
 	}
 </script>
 
