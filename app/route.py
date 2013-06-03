@@ -1,11 +1,12 @@
 import os
+import urllib2,json,urllib
 from flask import Flask, render_template, request, session, g, redirect, url_for, abort, flash
 from flask.ext.mongoengine import MongoEngine
 from flask_debugtoolbar import DebugToolbarExtension
 from flask.ext.login import (LoginManager, current_user, login_required,
                             login_user, logout_user, UserMixin, AnonymousUser,
                             confirm_login, fresh_login_required)
- 
+
 USERNAME = 'admin'
 PASSWORD = 'default'
 SECRET_KEY = 'development key'
@@ -53,6 +54,10 @@ class User(db.Document):
 		return True
 	def is_anonymous(self):
 		return False
+
+class Lntoken(db.Document):
+	access_token = db.StringField()
+	expires = db.LongField()
 
 @login_manager.user_loader
 def load_user(id):
@@ -107,6 +112,54 @@ def skillbank(name):
 		user =  User.objects(username=name)
 		return user[0].to_json();
 
+@app.route('/lnauth')
+def lnauth():
+	url =  "https://www.linkedin.com/uas/oauth2/accessToken";
+	parms = {"grant_type":"authorization_code", 
+		"client_id":"3ntk7givavqe", 
+		"client_secret":"uAMItZiGoMIcTK1v",
+		"redirect_uri":"http://127.0.0.1:5000/lnauth"}
+	parms['code'] = request.args.get('code','');
+	data = urllib.urlencode(parms)
+	req = urllib2.Request(url,data);
+	response = urllib2.urlopen(req);
+	html = json.load(response);
+	accesstoken =  html["access_token"];
+	Lntoken(access_token=accesstoken,expires= html["expires_in"]).save();
+	return 'Auth Token Saved!  ' + accesstoken
+
+
+
+@app.route('/lnpeople')
+def lncons():
+	url = "https://api.linkedin.com/v1/people-search:(people:(id,first-name,last-name,api-standard-profile-request))?"
+	parms = {"keywords" : "java","format":"json"}
+	parms["oauth2_access_token"] = str(Lntoken.objects()[0].access_token)
+	encoded_parms = urllib.urlencode(parms)
+	url = url + encoded_parms
+	print url
+	req = urllib2.Request(url)
+	response = urllib2.urlopen(req)
+	data = json.load(response)
+	values = data['people']['values']
+	for value in values:
+		url = value['apiStandardProfileRequest']['url']
+		url = url.replace("http","https")
+		selectors = ":(id,first-name,last-name,api-standard-profile-request,summary,positions,skills,educations,three-current-positions,three-past-positions,recommendations-received)?"
+		url = url + selectors + encoded_parms
+		print url
+		header_name = str(value['apiStandardProfileRequest']['headers']['values'][0]['name'])
+		header_val =str(value['apiStandardProfileRequest']['headers']['values'][0]['value'])
+		reqq = urllib2.Request(url)
+		reqq.add_header('x-li-auth-token',header_val)
+		print reqq.headers
+		try:
+			respo = urllib2.urlopen(reqq)
+			print respo.read()
+		except urllib2.HTTPError, err:
+			print err.msg
+		
+	return str(data)
 
 
 @app.route('/skillpage')
@@ -117,6 +170,7 @@ def skillpage():
 @app.route('/datareset')
 @login_required
 def data():
+	Lntoken.objects.delete()
 	User.objects().delete()
 	User(uid=1,name='Administrator',username='admin',password='default',role='admin',active=True,image='/static/images/user.png',linkedinid='',profile='').save()
 	User(uid=2,name='Nirav',username='nirav',password='nirav', role='jobseeker',active=True, image='/static/images/user.png',linkedinid='',profile='').save()
@@ -131,6 +185,11 @@ def list():
 	for user in users:
 		print user.username
 		print user.role
+	
+	tokens = Lntoken.objects.all()
+	for token in tokens:
+		print token.access_token
+		print token.expires
 	return'Listed'
 
 if __name__ == '__main__':
