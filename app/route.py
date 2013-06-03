@@ -92,7 +92,6 @@ def userhome(user):
 
 
 @app.route('/', methods=['GET','POST'])
-@login_required
 def home():
 	return userhome(current_user)
 
@@ -145,7 +144,8 @@ def lncons():
 	for value in values:
 		url = value['apiStandardProfileRequest']['url']
 		url = url.replace("http","https")
-		selectors = ":(id,first-name,last-name,summary,positions,headline,industry,public-profile-url,email-address)?"
+		#selectors = ":(id,first-name,last-name,summary,positions,headline,industry,public-profile-url,email-address)?"
+		selectors = ":(id,first-name,last-name,public-profile-url)?"
 		url = url + selectors + encoded_parms
 		header_name = str(value['apiStandardProfileRequest']['headers']['values'][0]['name'])
 		header_val =str(value['apiStandardProfileRequest']['headers']['values'][0]['value'])
@@ -166,7 +166,6 @@ def skillpage():
         return render_template('skillpage.html',user=db_user[0])
 
 @app.route('/datareset')
-@login_required
 def data():
 	Lntoken.objects.delete()
 	User.objects().delete()
@@ -177,7 +176,6 @@ def data():
  	return 'Data Entered!'
 
 @app.route('/list')
-@login_required
 def list():
 	users = User.objects.all()
 	for user in users:
