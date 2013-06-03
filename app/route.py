@@ -137,29 +137,27 @@ def lncons():
 	parms["oauth2_access_token"] = str(Lntoken.objects()[0].access_token)
 	encoded_parms = urllib.urlencode(parms)
 	url = url + encoded_parms
-	print url
 	req = urllib2.Request(url)
 	response = urllib2.urlopen(req)
 	data = json.load(response)
 	values = data['people']['values']
+	jsondata = []
 	for value in values:
 		url = value['apiStandardProfileRequest']['url']
 		url = url.replace("http","https")
-		selectors = ":(id,first-name,last-name,api-standard-profile-request,summary,positions,skills,educations,three-current-positions,three-past-positions,recommendations-received)?"
+		selectors = ":(id,first-name,last-name,summary,positions,headline,industry,public-profile-url,email-address)?"
 		url = url + selectors + encoded_parms
-		print url
 		header_name = str(value['apiStandardProfileRequest']['headers']['values'][0]['name'])
 		header_val =str(value['apiStandardProfileRequest']['headers']['values'][0]['value'])
 		reqq = urllib2.Request(url)
 		reqq.add_header('x-li-auth-token',header_val)
-		print reqq.headers
 		try:
 			respo = urllib2.urlopen(reqq)
-			print respo.read()
+			jsondata.append(json.load(respo))
 		except urllib2.HTTPError, err:
 			print err.msg
 		
-	return str(data)
+	return json.dumps(jsondata)
 
 
 @app.route('/skillpage')
